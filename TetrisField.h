@@ -5,17 +5,25 @@
 #include <memory>
 #include <utility>
 
-class TetrisField : public BaseApp
+class TetrisField
 {
 public:
 	const std::pair<int, int> tetris_field_size{10,20};
+	const std::pair<int, int> tetris_field_pos{ 1,  7 };
 
-	void KeyPressed(int btnCode) override;
-	void UpdateF(float deltaTime) override; //update current frame
+	void StartGame();
 
-	explicit TetrisField();
+	void KeyPressed(int btnCode);
+	bool UpdateF(float deltaTime); //update current frame
+
+	void ResetGame();
+	void SetTetrisField();
+	void FigureAction(bool is_print);
+	explicit TetrisField(BaseApp& output);
 
 private:
+
+	BaseApp& output;
 	float time_since_last_step;
 
 	int current_score;
@@ -30,12 +38,11 @@ private:
 	const std::pair<int, int> score_pos{ 3, 2 };
 	const std::pair<int, int> line_pos{ 1, 5 };
 	const std::pair<int, int> next_fig_pos{ 6,  4};
-	const std::pair<int, int> tetris_field_pos{ 1,  7 };
-	
+
 	const char boundaries = '+';
 
 	const wchar_t field_full = 223;//L'\u2589';
-	const char field_empty = 249;
+	const wchar_t field_empty = 249;
 
 	std::vector<bool> tetris_array;
 	
@@ -45,12 +52,9 @@ private:
 	void SetScore();
 	void SetNextFigure(bool is_full=true);
 	void SetLines();
-	void SetTetrisField();
-
-	void FigureAction(bool is_print);
-
+	
 	bool CheckFigTransformationPossible(const std::vector<std::pair<int, int>>& figure);
-	void MakeFigureStatic();
+	bool MakeFigureStatic();
 	void CheckCleanFilledLanes();
 
 };

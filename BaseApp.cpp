@@ -15,8 +15,8 @@
 BaseApp::BaseApp(int xSize, int ySize) : X_SIZE(xSize), Y_SIZE(ySize)
 {
 
-	SMALL_RECT windowSize = {0, 0, X_SIZE, Y_SIZE};
-	COORD windowBufSize = {X_SIZE-1, Y_SIZE-1};
+	SMALL_RECT windowSize = {0, 0, X_SIZE-1, Y_SIZE-1};
+	COORD windowBufSize = {X_SIZE, Y_SIZE};
 
 	mConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	mConsoleIn = GetStdHandle(STD_INPUT_HANDLE);
@@ -28,6 +28,7 @@ BaseApp::BaseApp(int xSize, int ySize) : X_SIZE(xSize), Y_SIZE(ySize)
 	}
 	if(!SetConsoleWindowInfo(mConsole, TRUE, &windowSize))
 	{
+		cout << X_SIZE << Y_SIZE << endl;
 		cout << "SetConsoleWindowInfo failed with error " << GetLastError() << endl;
 	}
 

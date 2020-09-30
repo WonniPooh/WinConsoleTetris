@@ -3,37 +3,51 @@
 #include <algorithm>
 #include <conio.h>
 
-TetrisField::TetrisField() : BaseApp(50,100),
-							 tetris_array(200, 0)
+TetrisField::TetrisField(BaseApp& m_output) : output(m_output),
+													tetris_array(200, 0)
 {
 	current_score = 0;
 	current_lines = 0;
 	time_since_last_step = 0;
 
-
 	CreateField();
+	SetTetrisField();
+
+	current_figure.reset(new figure());
+	next_figure.reset(new figure());
+}
+
+void TetrisField::StartGame()
+{
+	current_score = 0;
+	current_lines = 0;
+	time_since_last_step = 0;
+
+	current_figure->generate_figure();
+	next_figure->generate_figure();
+	
 	SetScore();
 	SetLines();
 
-
 	SetTetrisField();
-	
-	current_figure.reset(new figure());
-	current_figure->generate_figure();
 
-	next_figure.reset(new figure());
-	next_figure->generate_figure();
 	SetNextFigure();
 	FigureAction(true);
-	
 }
 
+void TetrisField::ResetGame()
+{
+	for (auto& elem : tetris_array) {
+		elem = 0;
+	}
+	SetNextFigure(false);
+}
 
 void TetrisField::CreateField()
 {
 	auto score_str = "Score";
 	for (int i = 0; i < strlen(score_str); i++) {
-		SetChar(i + score_pos.first+1, score_pos.second-1, score_str[i]);
+		output.SetChar(i + score_pos.first+1, score_pos.second-1, score_str[i]);
 	}
 
 	CreateBoundaries(std::pair<int, int>(score_pos.first-3, score_pos.second-2), 
@@ -42,7 +56,7 @@ void TetrisField::CreateField()
 	
 	auto lines_str = "Line";
 	for (int i = 0; i < strlen(lines_str); i++) {
-		SetChar(i + 1, line_pos.second-1, lines_str[i]);
+		output.SetChar(i + 1, line_pos.second-1, lines_str[i]);
 	}
 
 	CreateBoundaries(std::pair<int, int>(line_pos.first-1, line_pos.second-2),
@@ -63,11 +77,11 @@ void TetrisField::CreateBoundaries(const std::pair<int, int>& left_up, const std
 		for (int j = left_up.second; j <= right_down.second; j++) {
 
 			if (i == left_up.first || i == right_down.first) {
-				SetChar(i, j, boundaries);
+				output.SetChar(i, j, boundaries);
 			}
 			else {
 				if (j == left_up.second || j == right_down.second) {
-					SetChar(i, j, boundaries);
+					output.SetChar(i, j, boundaries);
 				}
 			}
 		}
@@ -80,7 +94,7 @@ void TetrisField::SetScore() {
 	current_score = std::string(6-current_score.length(), '0') + current_score;
 
 	for (int i = 0; i < 6; i++) {
-		SetChar(score_pos.first +i, score_pos.second, current_score[i]);
+		output.SetChar(score_pos.first +i, score_pos.second, current_score[i]);
 	}
 }
 
@@ -90,7 +104,7 @@ void TetrisField::SetLines() {
 	lines = std::string(4 - lines.length(), '0') + lines;
 
 	for (int i = 0; i < 4; i++) {
-		SetChar(line_pos.first + i, line_pos.second, lines[i]);
+		output.SetChar(line_pos.first + i, line_pos.second, lines[i]);
 	}
 }
 
@@ -109,9 +123,10 @@ void TetrisField::SetNextFigure(bool is_full) {
 	}
 
 	for (auto elem : m_figure) {
-		SetChar(elem.first + next_fig_pos.first+x_margin, elem.second + next_fig_pos.second+y_margin, char_to_use);
+		output.SetChar(elem.first + next_fig_pos.first+x_margin, elem.second + next_fig_pos.second+y_margin, char_to_use);
 	}
 }
+
 
 void TetrisField::SetTetrisField() {
 	for (int i = 0; i < tetris_field_size.second; i++) {
@@ -125,7 +140,7 @@ void TetrisField::SetTetrisField() {
 			else {
 				set_val = field_full;
 			}
-			SetChar(j + tetris_field_pos.first, i + tetris_field_pos.second, set_val);
+			output.SetChar(j + tetris_field_pos.first, i + tetris_field_pos.second, set_val);
 		}
 	}
 }
@@ -143,7 +158,7 @@ void TetrisField::FigureAction(bool is_print) {
 
 	for (auto elem : m_figure) {
 		if (elem.first >= 0 && elem.second >= 0) {
-			SetChar(elem.first + tetris_field_pos.first, elem.second + tetris_field_pos.second, symbol);
+			output.SetChar(elem.first + tetris_field_pos.first, elem.second + tetris_field_pos.second, symbol);
 		}
 	}
 }
@@ -169,17 +184,18 @@ bool TetrisField::CheckFigTransformationPossible(const std::vector<std::pair<int
 	return is_possible;
 }
 
-void TetrisField::MakeFigureStatic()
+bool TetrisField::MakeFigureStatic()
 {
 	auto figure = current_figure->get_figure();
 
 	for (auto elem : figure) {
 		int index = elem.first + elem.second * tetris_field_size.first;
 		if (index < 0) {
-			exit(0);
+			return false;
 		}
 		tetris_array[index] = true;
 	}
+	return true;
 }
 
 void TetrisField::CheckCleanFilledLanes()
@@ -273,7 +289,7 @@ void TetrisField::KeyPressed(int btnCode) {
 	}
 }
 
-void TetrisField::UpdateF(float deltaTime) //Update frame
+bool TetrisField::UpdateF(float deltaTime) //Update frame
 {
 	time_since_last_step += deltaTime;
 	if (time_since_last_step >= 1) {
@@ -288,7 +304,10 @@ void TetrisField::UpdateF(float deltaTime) //Update frame
 			FigureAction(true);
 		}
 		else {
-			MakeFigureStatic();
+			bool is_ok = MakeFigureStatic();
+			if (!is_ok) {
+				return false;
+			}
 			CheckCleanFilledLanes();
 			SetNextFigure(false);
 
@@ -303,4 +322,6 @@ void TetrisField::UpdateF(float deltaTime) //Update frame
 			FigureAction(true);
 		}		
 	}
+
+	return true;
 }

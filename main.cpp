@@ -1,9 +1,9 @@
 // Copyright 2009-2014 Blam Games, Inc. All Rights Reserved.
 
-#include "TetrisField.h"
+#include "TetrisGame.h"
 
 void main ()
 {
-	TetrisField app;
+	TetrisGame app;
 	app.Run();
 }
