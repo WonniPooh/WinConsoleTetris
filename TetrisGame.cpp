@@ -12,11 +12,11 @@ void TetrisGame::KeyPressed(int btnCode)
 	char ch = 0;
 
 	enum {
-		quit = 169,
-		pause = 167,
-		game_continue = 225,
-		reset = 170,
-		start = 235
+		quit = 113,
+		pause = 112,
+		game_continue = 99,
+		reset = 114,
+		start = 115
 	};
 
 	switch (btnCode) {
