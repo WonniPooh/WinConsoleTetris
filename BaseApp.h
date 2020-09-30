@@ -1,5 +1,3 @@
-// Copyright 2009-2014 Blam Games, Inc. All Rights Reserved.
-
 #pragma once
 
 #include <iostream>

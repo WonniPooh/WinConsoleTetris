@@ -1,6 +1,3 @@
-// Copyright 2009-2014 Blam Games, Inc. All Rights Reserved.
-
-
 #include <algorithm>
 #include <time.h>
 #include <conio.h>
