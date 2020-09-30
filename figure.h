@@ -16,24 +16,24 @@ enum figure_types {
 class figure
 {
 public:
-	void generate_figure();
+	void GenerateFigure();
 
-	int get_figure_type();
+	int GetFigureType();
 
-	void rotate_figure();
-	void try_rotate_figure();
-	void try_move_figure(int x_delta, int y_delta);
+	void RotateFigure();
+	void TryRotateFigure();
+	void TryMoveFigure(int x_delta, int y_delta);
 
 	const std::vector<std::pair<int,int>>& get_figure();
 	const std::vector<std::pair<int, int>>& get_trasformation_result();
-	void commit_transformation();
+	void CommitTransformation();
 
-	bool was_transformed();
+	bool WasTransformed();
 
 private:
 	int current_figure_type;
 	bool is_transformed;
-	void move_figure(int x_delta, int y_delta);
+	void MoveFigure(int x_delta, int y_delta);
 
 	std::vector<std::pair<int,int>> figure;
 	std::vector<std::pair<int, int>> transformed_figure;

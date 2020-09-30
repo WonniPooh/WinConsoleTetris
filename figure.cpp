@@ -1,7 +1,7 @@
 #include "figure.h"
 
 
-void figure::move_figure(int x_delta, int y_delta)
+void figure::MoveFigure(int x_delta, int y_delta)
 {
 	for (auto& elem : transformed_figure) {
 		elem.first += x_delta;
@@ -9,7 +9,7 @@ void figure::move_figure(int x_delta, int y_delta)
 	}
 }
 
-void figure::generate_figure()
+void figure::GenerateFigure()
 {
 	figure.clear();
 	is_transformed = false;
@@ -63,12 +63,12 @@ void figure::generate_figure()
 	}
 }
 
-int figure::get_figure_type()
+int figure::GetFigureType()
 {
 	return current_figure_type;
 }
 
-void figure::rotate_figure() {
+void figure::RotateFigure() {
 
 	enum direction {
 		left = 0,
@@ -111,17 +111,17 @@ void figure::rotate_figure() {
 		if (transformed_figure[1].second == transformed_figure[3].second) {		//   horizontal
 			rotate_over_point(2);
 			if (transformed_figure[0].first > transformed_figure[1].first) {	//	on the right
-				move_figure(-1, 1);
+				MoveFigure(-1, 1);
 			}
 			break;
 		}
 
 		if (transformed_figure[1].first == transformed_figure[3].first) {		//   vertical
 			if (transformed_figure[0].first < transformed_figure[1].first) {	//on the left
-				move_figure(0, -1);
+				MoveFigure(0, -1);
 			}
 			else {
-				move_figure(1, 0);
+				MoveFigure(1, 0);
 			}
 			rotate_over_point(2);
 		}
@@ -130,17 +130,17 @@ void figure::rotate_figure() {
 		if (transformed_figure[1].second == transformed_figure[3].second){		//   horizontal
 			rotate_over_point(2);
 			if (transformed_figure[0].first > transformed_figure[1].first) {	// on the right
-				move_figure(-1, 1);
+				MoveFigure(-1, 1);
 			}
 			break;
 		}
 
 		if (transformed_figure[1].first == transformed_figure[3].first){		//   vertical
 			if (transformed_figure[0].first < transformed_figure[1].first) {	// on the left
-				move_figure(0, -1);
+				MoveFigure(0, -1);
 			}
 			else {
-				move_figure(1, 0);
+				MoveFigure(1, 0);
 			}
 			rotate_over_point(2);
 		}
@@ -162,18 +162,18 @@ void figure::rotate_figure() {
 }
 
 
-void figure::try_rotate_figure()
+void figure::TryRotateFigure()
 {
 	is_transformed = true;
 	transformed_figure = figure;
-	rotate_figure();
+	RotateFigure();
 }
 
-void figure::try_move_figure(int x_delta, int y_delta)
+void figure::TryMoveFigure(int x_delta, int y_delta)
 {
 	is_transformed = true;
 	transformed_figure = figure;
-	move_figure(x_delta, y_delta);
+	MoveFigure(x_delta, y_delta);
 }
 
 const std::vector<std::pair<int, int>>& figure::get_figure()
@@ -186,13 +186,13 @@ const std::vector<std::pair<int, int>>& figure::get_trasformation_result()
 	return transformed_figure;
 }
 
-void figure::commit_transformation()
+void figure::CommitTransformation()
 {
 	figure = std::move(transformed_figure);
 	is_transformed = false;
 }
 
-bool figure::was_transformed()
+bool figure::WasTransformed()
 {
 	return is_transformed;
 }

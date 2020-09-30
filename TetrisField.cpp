@@ -23,8 +23,8 @@ void TetrisField::StartGame()
 	current_lines = 0;
 	time_since_last_step = 0;
 
-	current_figure->generate_figure();
-	next_figure->generate_figure();
+	current_figure->GenerateFigure();
+	next_figure->GenerateFigure();
 	
 	SetScore();
 	SetLines();
@@ -114,7 +114,7 @@ void TetrisField::SetNextFigure(bool is_full) {
 	int x_margin = -3;
 	int y_margin = 1;
 
-	if (next_figure->get_figure_type() == line)
+	if (next_figure->GetFigureType() == line)
 		x_margin += 1;
 
 	wchar_t char_to_use = field_full;
@@ -252,24 +252,24 @@ void TetrisField::KeyPressed(int btnCode) {
 		ch = getch();
 		
 		if (ch == arrow_right) {
-			current_figure->try_move_figure(1, 0);
+			current_figure->TryMoveFigure(1, 0);
 		}else if (ch == arrow_left) {
-			current_figure->try_move_figure(-1, 0);
+			current_figure->TryMoveFigure(-1, 0);
 		} else if (ch == arrow_down) {
-			current_figure->try_move_figure(0, 1);
+			current_figure->TryMoveFigure(0, 1);
 		}else if (ch == arrow_up) {
-			current_figure->try_rotate_figure();
+			current_figure->TryRotateFigure();
 		}
 	}
 
 	if (btnCode == space) { //drop figure
 		FigureAction(false);
 		while (true) {
-			current_figure->try_move_figure(0, 1);
+			current_figure->TryMoveFigure(0, 1);
 			action_ok = CheckFigTransformationPossible(current_figure->get_trasformation_result());
 			
 			if (action_ok) {
-				current_figure->commit_transformation();
+				current_figure->CommitTransformation();
 			}
 			else {
 				time_since_last_step = 1;
@@ -279,12 +279,12 @@ void TetrisField::KeyPressed(int btnCode) {
 		}
 	}
 
-	if(current_figure->was_transformed())
+	if(current_figure->WasTransformed())
 		action_ok = CheckFigTransformationPossible(current_figure->get_trasformation_result());
 	
 	if (action_ok) {
 		FigureAction(false);
-		current_figure->commit_transformation();
+		current_figure->CommitTransformation();
 		FigureAction(true);
 	}
 }
@@ -295,12 +295,12 @@ bool TetrisField::UpdateF(float deltaTime) //Update frame
 	if (time_since_last_step >= 1) {
 		time_since_last_step = 0;
 		
-		current_figure->try_move_figure(0, 1);
+		current_figure->TryMoveFigure(0, 1);
 		bool result = CheckFigTransformationPossible(current_figure->get_trasformation_result());
 		
 		if (result) {
 			FigureAction(false);
-			current_figure->commit_transformation();
+			current_figure->CommitTransformation();
 			FigureAction(true);
 		}
 		else {
@@ -312,7 +312,7 @@ bool TetrisField::UpdateF(float deltaTime) //Update frame
 			SetNextFigure(false);
 
 			current_figure.swap(next_figure);
-			next_figure->generate_figure();
+			next_figure->GenerateFigure();
 
 			SetScore();
 			SetLines();
