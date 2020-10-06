@@ -11,18 +11,11 @@
 
 BaseApp::BaseApp(int xSize, int ySize) : X_SIZE(xSize), Y_SIZE(ySize)
 {
-
 	SMALL_RECT windowSize = {0, 0, X_SIZE-1, Y_SIZE-1};
-	COORD windowBufSize = {X_SIZE, Y_SIZE};
 
 	mConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	mConsoleIn = GetStdHandle(STD_INPUT_HANDLE);
 
-	if(!SetConsoleScreenBufferSize(mConsole,  windowBufSize))
-	{
-		cout << "SetConsoleScreenBufferSize failed with error " << GetSystemMetrics(28) << endl;
-		cout << "SetConsoleScreenBufferSize failed with error " << GetLastError() << endl;
-	}
 	if(!SetConsoleWindowInfo(mConsole, TRUE, &windowSize))
 	{
 		cout << X_SIZE << Y_SIZE << endl;
