@@ -19,7 +19,9 @@ private:
 
 	int game_status;
 
-	const std::pair<int, int> controls_desc_position{ 14, 2 };
+	TetrisField tetris;
+
+	const std::pair<int, int> controls_desc_position{ tetris.tetris_field_size.first+4, 3 };
 	const std::vector<std::string> controls_description{"q - quit", "s - start", "r - reset", "p - pause", "c - continue", " ",
 														"ArrowUp - rotate", "ArrowDown - step down", "ArrowRight - move right", "ArrowLeft - move left",  
 														"Space - drop fig"};
@@ -27,6 +29,5 @@ private:
 	void PrintControlInfo();
 	void PrintGameOver();
 	void PrintPaused();
-	TetrisField tetris;
 };
 

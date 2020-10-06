@@ -9,6 +9,11 @@ void figure::MoveFigure(int x_delta, int y_delta)
 	}
 }
 
+void figure::SetStartingPos(int pos)
+{
+	starting_pos = pos;
+}
+
 void figure::GenerateFigure()
 {
 	figure.clear();
@@ -17,46 +22,46 @@ void figure::GenerateFigure()
 	current_figure_type = rand() % 7;
 
 	auto line_len_3 = [&]() {
-		figure.push_back(std::pair<int, int>(4, 0));
-		figure.push_back(std::pair<int, int>(5, 0));
-		figure.push_back(std::pair<int, int>(6, 0));
+		figure.push_back(std::pair<int, int>(starting_pos, 0));
+		figure.push_back(std::pair<int, int>(starting_pos+1, 0));
+		figure.push_back(std::pair<int, int>(starting_pos+2, 0));
 	};
 
 	switch (current_figure_type)
 	{
 	case square:
-		figure.push_back(std::pair<int, int>(4, -1));
-		figure.push_back(std::pair<int, int>(5, -1));
-		figure.push_back(std::pair<int, int>(4, 0));
-		figure.push_back(std::pair<int, int>(5, 0));
+		figure.push_back(std::pair<int, int>(starting_pos, -1));
+		figure.push_back(std::pair<int, int>(starting_pos+1, -1));
+		figure.push_back(std::pair<int, int>(starting_pos, 0));
+		figure.push_back(std::pair<int, int>(starting_pos+1, 0));
 		break;
 	case line:
-		figure.push_back(std::pair<int, int>(3, 0));
+		figure.push_back(std::pair<int, int>(starting_pos-1, 0));
 		line_len_3();
 		break;
 	case triangle_like:
-		figure.push_back(std::pair<int, int>(5, -1));
+		figure.push_back(std::pair<int, int>(starting_pos+1, -1));
 		line_len_3();
 		break;
 	case left_rake:
-		figure.push_back(std::pair<int, int>(4, -1));
+		figure.push_back(std::pair<int, int>(starting_pos, -1));
 		line_len_3();
 		break;
 	case right_rake:
-		figure.push_back(std::pair<int, int>(6, -1));
+		figure.push_back(std::pair<int, int>(starting_pos+2, -1));
 		line_len_3();
 		break;
 	case left_duck:
-		figure.push_back(std::pair<int, int>(4, -1));
-		figure.push_back(std::pair<int, int>(5, -1));
-		figure.push_back(std::pair<int, int>(5, 0));
-		figure.push_back(std::pair<int, int>(6, 0));
+		figure.push_back(std::pair<int, int>(starting_pos, -1));
+		figure.push_back(std::pair<int, int>(starting_pos+1, -1));
+		figure.push_back(std::pair<int, int>(starting_pos+1, 0));
+		figure.push_back(std::pair<int, int>(starting_pos+2, 0));
 		break;
 	case right_duck:
-		figure.push_back(std::pair<int, int>(5, -1));
-		figure.push_back(std::pair<int, int>(6, -1));
-		figure.push_back(std::pair<int, int>(4, 0));
-		figure.push_back(std::pair<int, int>(5, 0));
+		figure.push_back(std::pair<int, int>(starting_pos+1, -1));
+		figure.push_back(std::pair<int, int>(starting_pos+2, -1));
+		figure.push_back(std::pair<int, int>(starting_pos, 0));
+		figure.push_back(std::pair<int, int>(starting_pos+1, 0));
 		break;
 	default:
 		break;
@@ -176,7 +181,7 @@ void figure::TryMoveFigure(int x_delta, int y_delta)
 	MoveFigure(x_delta, y_delta);
 }
 
-const std::vector<std::pair<int, int>>& figure::get_figure()
+const std::vector<std::pair<int, int>>& figure::GetFigure()
 {
 	return figure;
 }

@@ -22,6 +22,7 @@ BaseApp::BaseApp(int xSize, int ySize) : X_SIZE(xSize), Y_SIZE(ySize)
 		cout << "SetConsoleWindowInfo failed with error " << GetLastError() << endl;
 	}
 
+
 	CONSOLE_CURSOR_INFO cursorInfo;
 	GetConsoleCursorInfo(mConsole, &cursorInfo);
 	cursorInfo.bVisible = FALSE;
@@ -61,7 +62,6 @@ void BaseApp::SetChar(int x, int y, wchar_t c)
 {
 	mChiBuffer[x + (X_SIZE+1)*y].Char.UnicodeChar = c;
 	mChiBuffer[x + (X_SIZE+1)*y].Attributes = FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED;
-
 }
 
 wchar_t BaseApp::GetChar(int x, int y)

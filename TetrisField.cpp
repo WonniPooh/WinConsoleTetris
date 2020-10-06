@@ -4,7 +4,7 @@
 #include <conio.h>
 
 TetrisField::TetrisField(BaseApp& m_output) : output(m_output),
-													tetris_array(200, 0)
+													tetris_array(tetris_field_size.first * tetris_field_size.second, 0)
 {
 	current_score = 0;
 	current_lines = 0;
@@ -15,6 +15,9 @@ TetrisField::TetrisField(BaseApp& m_output) : output(m_output),
 
 	current_figure.reset(new figure());
 	next_figure.reset(new figure());
+
+	current_figure->SetStartingPos(tetris_field_size.first / 2 - 1);
+	next_figure->SetStartingPos(tetris_field_size.first / 2 - 1);
 }
 
 void TetrisField::StartGame()
@@ -25,7 +28,7 @@ void TetrisField::StartGame()
 
 	current_figure->GenerateFigure();
 	next_figure->GenerateFigure();
-	
+
 	SetScore();
 	SetLines();
 
@@ -66,7 +69,7 @@ void TetrisField::CreateField()
 					 std::pair<int, int>(next_fig_pos.first+5, next_fig_pos.second+2));
 
 	CreateBoundaries(std::pair<int, int>(tetris_field_pos.first - 1, tetris_field_pos.second - 1),
-					 std::pair<int, int>(tetris_field_pos.first + 10, tetris_field_pos.second + 20));
+					 std::pair<int, int>(tetris_field_pos.first + tetris_field_size.first, tetris_field_pos.second + tetris_field_size.second));
 
 }
 
@@ -109,21 +112,22 @@ void TetrisField::SetLines() {
 }
 
 void TetrisField::SetNextFigure(bool is_full) {
-	auto m_figure = next_figure->get_figure();
-
-	int x_margin = -3;
-	int y_margin = 1;
-
-	if (next_figure->GetFigureType() == line)
-		x_margin += 1;
+	auto m_figure = next_figure->GetFigure();
 
 	wchar_t char_to_use = field_full;
+
 	if (!is_full) {
 		char_to_use = field_empty;
 	}
 
 	for (auto elem : m_figure) {
-		output.SetChar(elem.first + next_fig_pos.first+x_margin, elem.second + next_fig_pos.second+y_margin, char_to_use);
+		
+		int x_pos = tetris_field_size.first/2 - elem.first + next_fig_pos.first + 2;
+		
+		if (next_figure->GetFigureType() == line)
+			x_pos -= 1;
+
+		output.SetChar(x_pos, next_fig_pos.second + elem.second + 1, char_to_use);
 	}
 }
 
@@ -148,7 +152,7 @@ void TetrisField::SetTetrisField() {
 
 void TetrisField::FigureAction(bool is_print) {
 
-	auto m_figure = current_figure->get_figure();
+	auto m_figure = current_figure->GetFigure();
 
 	auto symbol = field_full;
 
@@ -186,7 +190,7 @@ bool TetrisField::CheckFigTransformationPossible(const std::vector<std::pair<int
 
 bool TetrisField::MakeFigureStatic()
 {
-	auto figure = current_figure->get_figure();
+	auto figure = current_figure->GetFigure();
 
 	for (auto elem : figure) {
 		int index = elem.first + elem.second * tetris_field_size.first;

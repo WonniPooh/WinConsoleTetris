@@ -1,6 +1,6 @@
 #include "TetrisGame.h"
 
-TetrisGame::TetrisGame() :  BaseApp(40, 30),
+TetrisGame::TetrisGame() :  BaseApp(50, 30),
 							tetris(*this),
 							game_status(game_new)
 {
